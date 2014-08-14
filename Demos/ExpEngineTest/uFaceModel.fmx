@@ -1,0 +1,76 @@
+object Frame1: TFrame1
+  Height = 211.000000000000000000
+  Width = 205.000000000000000000
+  object ScaledLayout1: TScaledLayout
+    Align = alClient
+    Height = 211.000000000000000000
+    OriginalWidth = 203.000000000000000000
+    OriginalHeight = 215.000000000000000000
+    Width = 205.000000000000000000
+    object Circle1: TCircle
+      Fill.Color = claBurlywood
+      Height = 215.000000000000000000
+      Width = 203.000000000000000000
+      object xLeftEye: TCircle
+        Fill.Color = claWhite
+        Height = 33.000000000000000000
+        Position.X = 48.000000000000000000
+        Position.Y = 80.000000000000000000
+        Width = 33.000000000000000000
+        object xLeftPupil: TCircle
+          Fill.Color = claBlue
+          Height = 17.000000000000000000
+          Position.X = 8.000000000000000000
+          Position.Y = 8.000000000000000000
+          Width = 17.000000000000000000
+        end
+      end
+      object xLeftBrow: TRectangle
+        Fill.Color = claBrown
+        Height = 9.000000000000000000
+        Position.X = 39.000000000000000000
+        Position.Y = 64.000000000000000000
+        Width = 50.000000000000000000
+      end
+      object xRightBrow: TRectangle
+        Fill.Color = claBrown
+        Height = 9.000000000000000000
+        Position.X = 111.000000000000000000
+        Position.Y = 64.000000000000000000
+        Width = 50.000000000000000000
+      end
+      object Pie1: TPie
+        Fill.Color = claGold
+        Height = 49.000000000000000000
+        Position.X = 75.000000000000000000
+        Position.Y = 96.000000000000000000
+        Width = 50.000000000000000000
+        StartAngle = 45.000000000000000000
+        EndAngle = 135.000000000000000000
+      end
+      object xMouth: TArc
+        Height = 50.000000000000000000
+        Position.X = 47.000000000000000000
+        Position.Y = 135.000000000000000000
+        Stroke.Thickness = 3.000000000000000000
+        Width = 106.000000000000000000
+        StartAngle = 45.000000000000000000
+        EndAngle = 90.000000000000000000
+      end
+      object xRightEye: TCircle
+        Fill.Color = claWhite
+        Height = 33.000000000000000000
+        Position.X = 120.000000000000000000
+        Position.Y = 80.000000000000000000
+        Width = 33.000000000000000000
+        object xRightPupil: TCircle
+          Fill.Color = claBlue
+          Height = 17.000000000000000000
+          Position.X = 8.000000000000000000
+          Position.Y = 8.000000000000000000
+          Width = 17.000000000000000000
+        end
+      end
+    end
+  end
+end

@@ -1,0 +1,93 @@
+object Form4: TForm4
+  Left = 0
+  Top = 0
+  Caption = 'Form4'
+  ClientHeight = 480
+  ClientWidth = 640
+  FormFactor.Width = 320
+  FormFactor.Height = 480
+  FormFactor.Devices = [Desktop, iPhone, iPad]
+  OnCreate = FormCreate
+  DesignerMobile = False
+  DesignerWidth = 0
+  DesignerHeight = 0
+  DesignerDeviceName = ''
+  DesignerOrientation = 0
+  DesignerOSVersion = ''
+  object Timer1: TTimer
+    Interval = 10
+    OnTimer = Timer1Timer
+    Left = 200
+    Top = 64
+  end
+  object ListBox1: TListBox
+    Height = 465.000000000000000000
+    Position.X = 16.000000000000000000
+    Position.Y = 8.000000000000000000
+    TabOrder = 0
+    Width = 193.000000000000000000
+    DefaultItemStyles.ItemStyle = ''
+    DefaultItemStyles.GroupHeaderStyle = ''
+    DefaultItemStyles.GroupFooterStyle = ''
+  end
+  object Button1: TButton
+    Height = 22.000000000000000000
+    Position.X = 216.000000000000000000
+    Position.Y = 40.000000000000000000
+    TabOrder = 1
+    Text = 'Train Push'
+    Width = 80.000000000000000000
+  end
+  object Button2: TButton
+    Height = 22.000000000000000000
+    Position.X = 216.000000000000000000
+    Position.Y = 8.000000000000000000
+    TabOrder = 2
+    Text = 'Train Neutral'
+    Width = 80.000000000000000000
+    OnClick = Button2Click
+  end
+  object Button3: TButton
+    Height = 22.000000000000000000
+    Position.X = 544.000000000000000000
+    Position.Y = 280.000000000000000000
+    TabOrder = 3
+    Text = 'Listen'
+    Width = 80.000000000000000000
+    OnClick = Button3Click
+  end
+  object lbCogActions: TListBox
+    Height = 257.000000000000000000
+    Position.X = 472.000000000000000000
+    Position.Y = 8.000000000000000000
+    TabOrder = 4
+    Width = 160.000000000000000000
+    DefaultItemStyles.ItemStyle = ''
+    DefaultItemStyles.GroupHeaderStyle = ''
+    DefaultItemStyles.GroupFooterStyle = ''
+    ShowCheckboxes = True
+    OnChangeCheck = lbCogActionsChangeCheck
+    object TListBoxItem
+      Height = 19.000000000000000000
+      IsChecked = True
+      TabOrder = 0
+      Text = 'Push'
+      Width = 156.000000000000000000
+    end
+    object TListBoxItem
+      Height = 19.000000000000000000
+      IsChecked = True
+      Position.Y = 19.000000000000000000
+      TabOrder = 1
+      Text = 'Pull'
+      Width = 156.000000000000000000
+    end
+    object cbActions: TComboBox
+      DisableFocusEffect = False
+      Height = 22.000000000000000000
+      Position.X = -168.000000000000000000
+      TabOrder = 0
+      Width = 161.000000000000000000
+    end
+  end
+end

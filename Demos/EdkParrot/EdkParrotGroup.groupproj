@@ -1,0 +1,60 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{3F486A38-C717-4787-916A-0FFCC79BC85E}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="EdkParrot.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\..\..\..\..\Documents\GitHub\DelphiARDrone\ARDrone_pkg.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\..\..\Packages\EmotivEDK.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="EdkParrot">
+        <MSBuild Projects="EdkParrot.dproj"/>
+    </Target>
+    <Target Name="EdkParrot:Clean">
+        <MSBuild Projects="EdkParrot.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EdkParrot:Make">
+        <MSBuild Projects="EdkParrot.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ARDrone_pkg">
+        <MSBuild Projects="..\..\..\..\..\..\Documents\GitHub\DelphiARDrone\ARDrone_pkg.dproj"/>
+    </Target>
+    <Target Name="ARDrone_pkg:Clean">
+        <MSBuild Projects="..\..\..\..\..\..\Documents\GitHub\DelphiARDrone\ARDrone_pkg.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ARDrone_pkg:Make">
+        <MSBuild Projects="..\..\..\..\..\..\Documents\GitHub\DelphiARDrone\ARDrone_pkg.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EmotivEDK">
+        <MSBuild Projects="..\..\..\Packages\EmotivEDK.dproj"/>
+    </Target>
+    <Target Name="EmotivEDK:Clean">
+        <MSBuild Projects="..\..\..\Packages\EmotivEDK.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EmotivEDK:Make">
+        <MSBuild Projects="..\..\..\Packages\EmotivEDK.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="EdkParrot;ARDrone_pkg;EmotivEDK"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="EdkParrot:Clean;ARDrone_pkg:Clean;EmotivEDK:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="EdkParrot:Make;ARDrone_pkg:Make;EmotivEDK:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>

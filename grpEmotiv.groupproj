@@ -1,0 +1,84 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <ProjectGuid>{02FFCEA2-52FC-47EB-9B0C-8593DE59A951}</ProjectGuid>
+    </PropertyGroup>
+    <ItemGroup>
+        <Projects Include="Demos\BasicEmotivTest\BasicEmotivTest.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Demos\ExpEngineTest\ExpEngineTest.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Demos\EdkParrot\EdkParrot.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="Demos\CogEngineTest\CogEngineTest.dproj">
+            <Dependencies/>
+        </Projects>
+        <Projects Include="..\DelphiARDrone\ARDrone_pkg.dproj">
+            <Dependencies/>
+        </Projects>
+    </ItemGroup>
+    <ProjectExtensions>
+        <Borland.Personality>Default.Personality.12</Borland.Personality>
+        <Borland.ProjectType/>
+        <BorlandProject>
+            <Default.Personality/>
+        </BorlandProject>
+    </ProjectExtensions>
+    <Target Name="BasicEmotivTest">
+        <MSBuild Projects="Demos\BasicEmotivTest\BasicEmotivTest.dproj"/>
+    </Target>
+    <Target Name="BasicEmotivTest:Clean">
+        <MSBuild Projects="Demos\BasicEmotivTest\BasicEmotivTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="BasicEmotivTest:Make">
+        <MSBuild Projects="Demos\BasicEmotivTest\BasicEmotivTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ExpEngineTest">
+        <MSBuild Projects="Demos\ExpEngineTest\ExpEngineTest.dproj"/>
+    </Target>
+    <Target Name="ExpEngineTest:Clean">
+        <MSBuild Projects="Demos\ExpEngineTest\ExpEngineTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ExpEngineTest:Make">
+        <MSBuild Projects="Demos\ExpEngineTest\ExpEngineTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="EdkParrot">
+        <MSBuild Projects="Demos\EdkParrot\EdkParrot.dproj"/>
+    </Target>
+    <Target Name="EdkParrot:Clean">
+        <MSBuild Projects="Demos\EdkParrot\EdkParrot.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="EdkParrot:Make">
+        <MSBuild Projects="Demos\EdkParrot\EdkParrot.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="CogEngineTest">
+        <MSBuild Projects="Demos\CogEngineTest\CogEngineTest.dproj"/>
+    </Target>
+    <Target Name="CogEngineTest:Clean">
+        <MSBuild Projects="Demos\CogEngineTest\CogEngineTest.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="CogEngineTest:Make">
+        <MSBuild Projects="Demos\CogEngineTest\CogEngineTest.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="ARDrone_pkg">
+        <MSBuild Projects="..\DelphiARDrone\ARDrone_pkg.dproj"/>
+    </Target>
+    <Target Name="ARDrone_pkg:Clean">
+        <MSBuild Projects="..\DelphiARDrone\ARDrone_pkg.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="ARDrone_pkg:Make">
+        <MSBuild Projects="..\DelphiARDrone\ARDrone_pkg.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="Build">
+        <CallTarget Targets="BasicEmotivTest;ExpEngineTest;EdkParrot;CogEngineTest;ARDrone_pkg"/>
+    </Target>
+    <Target Name="Clean">
+        <CallTarget Targets="BasicEmotivTest:Clean;ExpEngineTest:Clean;EdkParrot:Clean;CogEngineTest:Clean;ARDrone_pkg:Clean"/>
+    </Target>
+    <Target Name="Make">
+        <CallTarget Targets="BasicEmotivTest:Make;ExpEngineTest:Make;EdkParrot:Make;CogEngineTest:Make;ARDrone_pkg:Make"/>
+    </Target>
+    <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
+</Project>
