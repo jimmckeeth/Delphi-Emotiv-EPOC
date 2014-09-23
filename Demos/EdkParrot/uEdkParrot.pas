@@ -62,6 +62,7 @@ type
     Layout1: TLayout;
     lblLog: TLabel;
     DroneSendTimer: TTimer;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure EventAcquisitionTimerTimer(Sender: TObject);
     procedure btnTrainClick(Sender: TObject);
@@ -109,13 +110,16 @@ type
     procedure btnBackMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Single);
     procedure DroneSendTimerTimer(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     eEvent: Pointer;
     eState: Pointer;
     eProfile: Pointer;
     userID: word;
-    sustain: TDroneMovement;
+    cogpower: Single;
+    FSustain: TDroneMovement;
     procedure GetEvent;
     procedure Log(msg: String);
     procedure HandleCogEvent;
@@ -125,6 +129,10 @@ type
     procedure CogDrone(cogAction: EE_CognitivAction_t; power: Single);
     procedure CogTether(cogAction: EE_CognitivAction_t);
     procedure RunRemoteAction(action: string);
+    procedure SetSustain(const Value: TDroneMovement);
+
+    property sustain: TDroneMovement read FSustain write SetSustain;
+
   public
     { Public declarations }
   end;
@@ -136,12 +144,14 @@ implementation
 
 {$R *.fmx}
 
+uses System.Rtti;
+
 procedure TForm4.btnBackClick(Sender: TObject);
 begin
   if switchTether.IsChecked then
     RunRemoteAction('actBackward');
   if switchDrone.IsChecked then
-    drone.FrontBackAngle(-1);
+    drone.MoveBackward;
 end;
 
 procedure TForm4.btnBackMouseDown(Sender: TObject; Button: TMouseButton;
@@ -155,7 +165,7 @@ begin
   if switchTether.IsChecked then
     RunRemoteAction('actForwardRight');
   if switchDrone.IsChecked then
-    drone.AnglularSpeed(-1);
+    drone.RotateCCW;
 end;
 
 procedure TForm4.btnCCWMouseDown(Sender: TObject; Button: TMouseButton;
@@ -169,12 +179,13 @@ begin
   if switchTether.IsChecked then
     RunRemoteAction('actForwardLeft');
   if switchDrone.IsChecked then
-    drone.AnglularSpeed(1);
+    drone.RotateCW;
 end;
 
 procedure TForm4.btnCWMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
+  caption := '';
   sustain := TDroneMovement.RotateCW;
 end;
 
@@ -183,7 +194,7 @@ begin
   if switchTether.IsChecked then
     RunRemoteAction('actBackward');
   if switchDrone.IsChecked then
-    drone.VerticalSpeed(-1);
+    drone.MoveDown;
 end;
 
 procedure TForm4.btnDownMouseDown(Sender: TObject; Button: TMouseButton;
@@ -201,7 +212,7 @@ end;
 procedure TForm4.btnForwardClick(Sender: TObject);
 begin
   if switchDrone.IsChecked then
-    drone.FrontBackAngle(1);
+    drone.MoveForward;
   if switchTether.IsChecked then
     RunRemoteAction('actForward');
 end;
@@ -217,7 +228,7 @@ begin
   if switchTether.IsChecked then
     RunRemoteAction('actLeft');
   if switchDrone.IsChecked then
-    drone.LeftRightAngle(1);
+    drone.MoveLeft;
 end;
 
 procedure TForm4.btnLeftMouseDown(Sender: TObject; Button: TMouseButton;
@@ -231,7 +242,7 @@ begin
   if switchTether.IsChecked then
     RunRemoteAction('actRight');
   if switchDrone.IsChecked then
-    drone.LeftRightAngle(-1);
+    drone.MoveRight;
 end;
 
 procedure TForm4.btnRightMouseDown(Sender: TObject; Button: TMouseButton;
@@ -245,7 +256,7 @@ begin
   if switchTether.IsChecked then
     RunRemoteAction('actForward');
   if switchDrone.IsChecked then
-    drone.VerticalSpeed(1);
+    drone.MoveUp;
 end;
 
 procedure TForm4.btnUpMouseDown(Sender: TObject; Button: TMouseButton;
@@ -258,6 +269,11 @@ procedure TForm4.btnUpMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
   sustain := TDroneMovement.Hover;
+end;
+
+procedure TForm4.Button1Click(Sender: TObject);
+begin
+  Drone.AnimateLEDs(TLEDAnimation.SnakeGreenRed, 8, 1);
 end;
 
 procedure TForm4.cbActionsEnter(Sender: TObject);
@@ -296,7 +312,10 @@ end;
 procedure TForm4.btnLaunchClick(Sender: TObject);
 begin
   if switchDrone.IsChecked then
+  begin
+    Drone.FlatTrims;
     Drone.Takeoff;
+  end;
 end;
 
 procedure TForm4.btnTrainClick(Sender: TObject);
@@ -356,14 +375,26 @@ end;
 
 procedure TForm4.btnHoverClick(Sender: TObject);
 begin
+  sustain := TDroneMovement.Hover;
   if switchDrone.IsChecked then
     drone.Hover;
   if switchTether.IsChecked then
     RunRemoteAction('actAllStop');
 end;
 
+procedure TForm4.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  if switchDrone.IsChecked then
+  begin
+    Drone.Land;
+    Drone.Disconnect;
+  end;
+end;
+
 procedure TForm4.FormCreate(Sender: TObject);
 begin
+  cogpower := 0;
+
   lblAct4.Text := '';
   lblAct3.Text := '';
   lblAct2.Text := '';
@@ -404,6 +435,7 @@ begin
     drone.Connect;
     drone.Emergency;
     drone.FlatTrims;
+    drone.UnlimitedAltitude;
   end
   else
   begin
@@ -442,10 +474,9 @@ end;
 
 procedure TForm4.Log(msg: String);
 begin
+  if not Assigned(lbLog) then exit;
+
   if (lbLog.Items.Count > 0) and (lbLog.Items[0] = msg) then
-  begin
-    //lblLog.FontColor := AlphaColor
-  end
   else
     lbLog.Items.Insert(0, msg);
 end;
@@ -553,17 +584,23 @@ procedure TForm4.DroneSendTimerTimer(Sender: TObject);
 begin
   if switchDrone.IsChecked then
   begin
-    case sustain of
-      TDroneMovement.Hover: Drone.Hover;
-      TDroneMovement.MoveUp: Drone.MoveUp;
-      TDroneMovement.MoveDown: Drone.MoveDown;
-      TDroneMovement.MoveLeft: Drone.MoveLeft;
-      TDroneMovement.MoveRight: Drone.MoveRight;
-      TDroneMovement.MoveForward: Drone.MoveForward;
-      TDroneMovement.MoveBackward: Drone.MoveBackward;
-      TDroneMovement.RotateCW: Drone.RotateCW;
-      TDroneMovement.RotateCCW: Drone.RotateCCW;
-    end;
+    if (cogpower <= 0) then
+    begin
+      case sustain of
+        TDroneMovement.Hover: Drone.Hover;
+        TDroneMovement.MoveUp: Drone.MoveUp;
+        TDroneMovement.MoveDown: Drone.MoveDown;
+        TDroneMovement.MoveLeft: Drone.MoveLeft;
+        TDroneMovement.MoveRight: Drone.MoveRight;
+        TDroneMovement.MoveForward: Drone.MoveForward;
+        TDroneMovement.MoveBackward: Drone.MoveBackward;
+        TDroneMovement.RotateCW: Drone.RotateCW;
+        TDroneMovement.RotateCCW: Drone.RotateCCW;
+      end;
+      Caption := 'Current command: ' + TValue.From(sustain).ToString;
+    end
+    else
+      Caption := 'Cognitive ' + IntToStr(trunc(CogPower * 100)) + '%';
   end;
 end;
 
@@ -572,6 +609,11 @@ begin
   TetheringAppProfile1.RunRemoteAction(
     TetheringManager1.RemoteProfiles.First,
     action);
+end;
+
+procedure TForm4.SetSustain(const Value: TDroneMovement);
+begin
+  FSustain := Value;
 end;
 
 procedure TForm4.btnEmergencyClick(Sender: TObject);
@@ -602,63 +644,42 @@ end;
 
 procedure TForm4.CogDrone(cogAction: EE_CognitivAction_t; power: Single);
 begin
+  cogpower := power;
   case cogAction of
     COG_NEUTRAL:
-      begin
-        drone.Hover;
-      end;
+    begin
+      Drone.Hover;
+      cogpower := 0;
+    end;
     COG_PUSH:
-      begin
-        drone.FrontBackAngle(power);
-      end;
+      Drone.MoveForward(power);
     COG_PULL:
-      begin
-        drone.FrontBackAngle(-1 * power);
-      end;
+      Drone.MoveBackward(power);
     COG_LIFT:
-      begin
-        drone.VerticalSpeed(power);
-      end;
+      Drone.MoveUp(power);
     COG_DROP:
-      begin
-        drone.VerticalSpeed(-1 * power);
-      end;
+      Drone.MoveDown(power);
     COG_LEFT:
-      begin
-        drone.LeftRightAngle(power);
-      end;
+      Drone.MoveLeft(power);
     COG_RIGHT:
-      begin
-        drone.LeftRightAngle(-1 * power);
-      end;
+      Drone.MoveRight(power);
     COG_ROTATE_LEFT:
-      begin
-        drone.AnglularSpeed(power);
-      end;
+      Drone.RotateCCW(power);
     COG_ROTATE_RIGHT:
-      begin
-        drone.AnglularSpeed(-1 * power);
-      end;
+      Drone.RotateCW(power);
     COG_ROTATE_CLOCKWISE:
-      begin
-        drone.AnglularSpeed(power);
-      end;
+      Drone.RotateCW(power);
     COG_ROTATE_COUNTER_CLOCKWISE:
-      begin
-        drone.AnglularSpeed(-1 * power);
-      end;
+      Drone.RotateCCW(power);
     COG_ROTATE_FORWARDS:
-      begin
-        drone.FrontBackAngle(power);
-      end;
+      Drone.MoveForward(power);
     COG_ROTATE_REVERSE:
-      begin
-        drone.FrontBackAngle(-1 * power);
-      end;
+      Drone.MoveBackward(power);
     COG_DISAPPEAR:
-      begin
-        drone.Land;
-      end;
+    begin
+      Drone.Land;
+      cogpower := 0;
+    end;
   end;
 end;
 
