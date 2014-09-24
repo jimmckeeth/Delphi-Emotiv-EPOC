@@ -7,6 +7,7 @@ uses
 
 type
   TTrainingSucceededEvent = procedure(Sender: TObject; var AReject: Boolean) of object;
+  TCognitivActionEvent = procedure(Sender: TObject; AEvent: EE_CognitivAction_t; APower: single) of object;
 
   TEmotivEpoc = class(TComponent)
   private
@@ -14,9 +15,8 @@ type
     eEvent: Pointer;
     eState: Pointer;
     eProfile: Pointer;
-    userID: Word;
+    fUserID: Word;
 
-    fTimer: TThread;
     fCognitivTrainingStarted: TNotifyEvent;
     fCognitivTrainingRejected: TNotifyEvent;
     fCognitivAutoSamplingNeutralCompleted: TNotifyEvent;
@@ -28,6 +28,7 @@ type
     fUserAdded: TNotifyEvent;
     fUserRemoved: TNotifyEvent;
     fProfileEvent: TNotifyEvent;
+    fCognitiveAction: TCognitivActionEvent;
     procedure GetEvent;
     procedure HandleCogAction;
     procedure HandleCogEvent;
@@ -37,6 +38,14 @@ type
 
     procedure AcceptTraining;
   public
+    { Public declarations }
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    procedure Train(AAction: EE_CognitivAction_t);
+    procedure Listen(AMask: Word);
+  published
+    { Published declarations }
     property OnCognitivTrainingStarted: TNotifyEvent read fCognitivTrainingStarted write fCognitivTrainingStarted;
     property OnCognitivTrainingSucceeded: TTrainingSucceededEvent read fCognitivTrainingSucceeded write fCognitivTrainingSucceeded;
     property OnCognitivTrainingFailed: TNotifyEvent read fCognitivTrainingFailed write fCognitivTrainingFailed;
@@ -50,14 +59,7 @@ type
     property OnUserRemoved: TNotifyEvent read fUserRemoved write fUserRemoved;
     property OnProfileEvent: TNotifyEvent read fProfileEvent write fProfileEvent;
 
-
-
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    { Public declarations }
-
-  published
-    { Published declarations }
+    property OnCognitiveAction: TCognitivActionEvent read fCognitiveAction write fCognitiveAction;
   end;
 
 const
@@ -166,7 +168,7 @@ begin
 
   if not (csDesigning in ComponentState) then
   begin
-    userID := 65535;
+    fUserID := 0;
     //RaiseEdkError(EE_EngineRemoteConnect(PAnsiChar(AnsiString('127.0.0.1')),1726,PAnsiChar(AnsiString('Emotiv Systems-5'))));
     RaiseEdkError(EE_EngineConnect(PAnsiChar(AnsiString('Emotiv Systems-5'))));
 
@@ -197,7 +199,7 @@ begin
   if state = EDK_OK then
   begin
     eventType := EE_EmoEngineEventGetType(eEvent);
-    RaiseEdkError(EE_EmoEngineEventGetUserId(eEvent, @userId));
+    RaiseEdkError(EE_EmoEngineEventGetUserId(eEvent, @fUserID));
     case eventType of
       EE_UnknownEvent:
       begin
@@ -251,7 +253,6 @@ begin
         fCognitivTrainingSucceeded(self, reject);
       if not reject then
         AcceptTraining;
-
       //animateTraining.Stop;
       //pbTraining.Visible := False;
     end;
@@ -265,9 +266,20 @@ begin
   end;
 end;
 
+procedure TEmotivEpoc.Listen(AMask: Word);
+begin
+  RaiseEdkError(EE_CognitivSetActiveActions(fUserID, AMask));
+end;
+
 procedure TEmotivEpoc.Log(aMsg: String);
 begin
 
+end;
+
+procedure TEmotivEpoc.Train(AAction: EE_CognitivAction_t);
+begin
+  RaiseEdkError(EE_CognitivSetTrainingAction(fUserID, AAction));
+  RaiseEdkError(EE_CognitivSetTrainingControl(fUserID, COG_START));
 end;
 
 procedure TEmotivEpoc.HandleCogAction();
@@ -278,13 +290,8 @@ begin
   cogAction := ES_CognitivGetCurrentAction(eState);
   power := ES_CognitivGetCurrentActionPower(eState);
 
- { DisplayPower(cogAction, power);
-
-  if switchTether.IsChecked then
-    CogTether(cogAction);
-
-  if switchDrone.IsChecked then
-    CogDrone(cogAction, power);  }
+  if Assigned(fCognitiveAction) then
+    fCognitiveAction(self, cogAction, power);
 end;
 
 
