@@ -46,10 +46,10 @@ type
     pbTraining: TProgressBar;
     animateTraining: TFloatAnimation;
     StyleBook1: TStyleBook;
-    switchTether: TSwitch;
+    switchCooper: TSwitch;
     Label2: TLabel;
-    TetheringAppProfile1: TTetheringAppProfile;
-    TetheringManager1: TTetheringManager;
+    CooperTetheringProfile: TTetheringAppProfile;
+    TetheringManager: TTetheringManager;
     Drone: TARDrone;
     btnEmergency: TSpeedButton;
     Image1: TImage;
@@ -63,6 +63,8 @@ type
     lblLog: TLabel;
     DroneSendTimer: TTimer;
     Button1: TButton;
+    Button2: TButton;
+    DisplayPowerThetheringProfile: TTetheringAppProfile;
     procedure FormCreate(Sender: TObject);
     procedure EventAcquisitionTimerTimer(Sender: TObject);
     procedure btnTrainClick(Sender: TObject);
@@ -80,10 +82,10 @@ type
     procedure btnUpClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
     procedure timerTrainingTimer(Sender: TObject);
-    procedure TetheringManager1EndAutoConnect(Sender: TObject);
-    procedure TetheringManager1PairedFromLocal(const Sender: TObject;
+    procedure TetheringManagerEndAutoConnect(Sender: TObject);
+    procedure TetheringManagerPairedFromLocal(const Sender: TObject;
       const AManagerInfo: TTetheringManagerInfo);
-    procedure TetheringManager1PairedToRemote(const Sender: TObject;
+    procedure TetheringManagerPairedToRemote(const Sender: TObject;
       const AManagerInfo: TTetheringManagerInfo);
     procedure btnEmergencyClick(Sender: TObject);
     procedure btnFlatTrimClick(Sender: TObject);
@@ -112,6 +114,11 @@ type
     procedure DroneSendTimerTimer(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure Button1Click(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure animateTrainingProcess(Sender: TObject);
+    procedure switchCooperSwitch(Sender: TObject);
+    procedure animateTrainingFinish(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
   private
     { Private declarations }
     eEvent: Pointer;
@@ -120,6 +127,7 @@ type
     userID: word;
     cogpower: Single;
     FSustain: TDroneMovement;
+    FLastPower: Integer;
     procedure GetEvent;
     procedure Log(msg: String);
     procedure HandleCogEvent;
@@ -127,7 +135,7 @@ type
     procedure PopulateCogActionList;
     procedure DisplayPower(cogAction: EE_CognitivAction_t; power: Single);
     procedure CogDrone(cogAction: EE_CognitivAction_t; power: Single);
-    procedure CogTether(cogAction: EE_CognitivAction_t);
+    procedure CogTether(cogAction: EE_CognitivAction_t; power: Single);
     procedure RunRemoteAction(action: string);
     procedure SetSustain(const Value: TDroneMovement);
 
@@ -144,11 +152,41 @@ implementation
 
 {$R *.fmx}
 
-uses System.Rtti;
+uses System.Rtti, System.Generics.Collections;
+
+procedure TForm4.animateTrainingFinish(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
+  begin
+    DisplayPowerThetheringProfile.SendString(
+      TetheringManager.RemoteProfiles[I],
+      cbActions.Selected.Text, '0');
+  end;
+end;
+
+procedure TForm4.animateTrainingProcess(Sender: TObject);
+var
+  I: Integer;
+  power: Integer;
+begin
+  Power := Trunc(pbTraining.Value);
+  if Power <> FLastPower then
+  begin
+    for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
+    begin
+      DisplayPowerThetheringProfile.SendString(
+        TetheringManager.RemoteProfiles[I],
+        cbActions.Selected.Text, Power.ToString);
+    end;
+    FLastPower := power;
+  end;
+end;
 
 procedure TForm4.btnBackClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actBackward');
   if switchDrone.IsChecked then
     drone.MoveBackward;
@@ -162,7 +200,7 @@ end;
 
 procedure TForm4.btnCCWClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actForwardRight');
   if switchDrone.IsChecked then
     drone.RotateCCW;
@@ -176,7 +214,7 @@ end;
 
 procedure TForm4.btnCWClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actForwardLeft');
   if switchDrone.IsChecked then
     drone.RotateCW;
@@ -191,7 +229,7 @@ end;
 
 procedure TForm4.btnDownClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actBackward');
   if switchDrone.IsChecked then
     drone.MoveDown;
@@ -213,7 +251,7 @@ procedure TForm4.btnForwardClick(Sender: TObject);
 begin
   if switchDrone.IsChecked then
     drone.MoveForward;
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actForward');
 end;
 
@@ -225,7 +263,7 @@ end;
 
 procedure TForm4.btnLeftClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actLeft');
   if switchDrone.IsChecked then
     drone.MoveLeft;
@@ -239,7 +277,7 @@ end;
 
 procedure TForm4.btnRightClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actRight');
   if switchDrone.IsChecked then
     drone.MoveRight;
@@ -253,7 +291,7 @@ end;
 
 procedure TForm4.btnUpClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actForward');
   if switchDrone.IsChecked then
     drone.MoveUp;
@@ -274,6 +312,11 @@ end;
 procedure TForm4.Button1Click(Sender: TObject);
 begin
   Drone.AnimateLEDs(TLEDAnimation.SnakeGreenRed, 8, 1);
+end;
+
+procedure TForm4.Button2Click(Sender: TObject);
+begin
+  TetheringManager.AutoConnect();
 end;
 
 procedure TForm4.cbActionsEnter(Sender: TObject);
@@ -301,7 +344,7 @@ end;
 
 procedure TForm4.btnLandClick(Sender: TObject);
 begin
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actAllStop');
   if switchDrone.IsChecked then
   begin
@@ -378,7 +421,7 @@ begin
   sustain := TDroneMovement.Hover;
   if switchDrone.IsChecked then
     drone.Hover;
-  if switchTether.IsChecked then
+  if switchCooper.IsChecked then
     RunRemoteAction('actAllStop');
 end;
 
@@ -413,6 +456,11 @@ begin
   sustain := TDroneMovement.Hover;
 end;
 
+procedure TForm4.FormShow(Sender: TObject);
+begin
+  pbTraining.Visible := False;
+end;
+
 procedure TForm4.PopulateCogActionList;
 var
   I: Integer;
@@ -444,18 +492,28 @@ begin
   end;
 end;
 
-procedure TForm4.TetheringManager1EndAutoConnect(Sender: TObject);
+procedure TForm4.switchCooperSwitch(Sender: TObject);
 begin
-  Log('Tethered to: ' + TetheringManager1.RemoteProfiles.First.ProfileGroup);
+  TetheringManager.AutoConnect();
 end;
 
-procedure TForm4.TetheringManager1PairedFromLocal(const Sender: TObject;
+procedure TForm4.TetheringManagerEndAutoConnect(Sender: TObject);
+var
+  I: Integer;
+begin
+  for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
+  begin
+    Log('Tethered to: ' + TetheringManager.RemoteProfiles[I].ProfileGroup);
+  end;
+end;
+
+procedure TForm4.TetheringManagerPairedFromLocal(const Sender: TObject;
   const AManagerInfo: TTetheringManagerInfo);
 begin
   Log('Paired from Local');
 end;
 
-procedure TForm4.TetheringManager1PairedToRemote(const Sender: TObject;
+procedure TForm4.TetheringManagerPairedToRemote(const Sender: TObject;
   const AManagerInfo: TTetheringManagerInfo);
 begin
   Log('Paired from Remote');
@@ -468,8 +526,8 @@ end;
 
 procedure TForm4.timerTrainingTimer(Sender: TObject);
 begin
-  pbTraining.Visible := True;
-  pbTraining.Value := pbTraining.Value + 12;
+ // pbTraining.Visible := True;
+ // pbTraining.Value := pbTraining.Value + 12;
 end;
 
 procedure TForm4.Log(msg: String);
@@ -546,6 +604,7 @@ end;
 procedure TForm4.DisplayPower(cogAction: EE_CognitivAction_t; power: Single);
 var
   actionName: String;
+  I: Integer;
 begin
   actionName := CognitivActionToStr(cogAction);
   pbAct1.Value := 0;
@@ -567,6 +626,16 @@ begin
   if lblAct4.Text = actionName then
   begin
     pbAct4.Value := power;
+  end;
+
+  if not pbTraining.Visible then
+  begin
+    for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
+    begin
+      DisplayPowerThetheringProfile.SendString(
+        TetheringManager.RemoteProfiles[I],
+        actionName, Trunc(power * 100).ToString);
+    end;
   end;
 end;
 
@@ -605,10 +674,20 @@ begin
 end;
 
 procedure TForm4.RunRemoteAction(action: string);
+var
+  I: Integer;
+  acts: TList<TRemoteAction>;
 begin
-  TetheringAppProfile1.RunRemoteAction(
-    TetheringManager1.RemoteProfiles.First,
-    action);
+  for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
+  begin
+    acts := CooperTetheringProfile.GetRemoteProfileActions(TetheringManager.RemoteProfiles[I]);
+    if acts.Count > 0 then
+    begin
+      CooperTetheringProfile.RunRemoteAction(
+        TetheringManager.RemoteProfiles[I],
+        action);
+    end;
+  end;
 end;
 
 procedure TForm4.SetSustain(const Value: TDroneMovement);
@@ -622,7 +701,7 @@ begin
     Drone.Emergency;
 end;
 
-procedure TForm4.CogTether(cogAction: EE_CognitivAction_t);
+procedure TForm4.CogTether(cogAction: EE_CognitivAction_t; power: Single);
 begin
   case cogAction of
     COG_NEUTRAL: RunRemoteAction('actAllStop');
@@ -630,7 +709,7 @@ begin
     COG_PULL: RunRemoteAction('actBackward');
     COG_LIFT: RunRemoteAction('actForward');
     COG_DROP: RunRemoteAction('actBackward');
-    COG_LEFT: RunRemoteAction('actLet');
+    COG_LEFT: RunRemoteAction('actLeft');
     COG_RIGHT: RunRemoteAction('actRight');
     COG_ROTATE_LEFT: RunRemoteAction('actForwardLeft');
     COG_ROTATE_RIGHT: RunRemoteAction('actForwardRight');
@@ -693,8 +772,8 @@ begin
 
   DisplayPower(cogAction, power);
 
-  if switchTether.IsChecked then
-    CogTether(cogAction);
+  if switchCooper.IsChecked then
+    CogTether(cogAction, power);
 
   if switchDrone.IsChecked then
     CogDrone(cogAction, power);

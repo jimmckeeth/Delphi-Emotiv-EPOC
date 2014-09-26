@@ -1,0 +1,21 @@
+inherited Form17_GGlass: TForm17_GGlass
+  BorderStyle = None
+  ClientHeight = 240
+  ClientWidth = 427
+  DesignerMasterStyle = 0
+  inherited Layout1: TLayout
+    Position.Y = 38.000000000000000000
+    Size.Width = 427.000000000000000000
+    inherited lbCommand: TLabel
+      Size.Width = 427.000000000000000000
+    end
+    inherited pbPower: TProgressBar
+      Position.Y = 10.000000000000000000
+      Size.Width = 407.000000000000000000
+    end
+    inherited Label2: TLabel
+      Position.Y = 83.000000000000000000
+      Size.Width = 427.000000000000000000
+    end
+  end
+end

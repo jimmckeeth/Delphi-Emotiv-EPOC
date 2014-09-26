@@ -18,6 +18,9 @@
         <Projects Include="..\DelphiARDrone\ARDrone_pkg.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Demos\PowerViewer\PowerViewer.dproj">
+            <Dependencies/>
+        </Projects>
     </ItemGroup>
     <ProjectExtensions>
         <Borland.Personality>Default.Personality.12</Borland.Personality>
@@ -71,14 +74,23 @@
     <Target Name="ARDrone_pkg:Make">
         <MSBuild Projects="..\DelphiARDrone\ARDrone_pkg.dproj" Targets="Make"/>
     </Target>
+    <Target Name="PowerViewer">
+        <MSBuild Projects="Demos\PowerViewer\PowerViewer.dproj"/>
+    </Target>
+    <Target Name="PowerViewer:Clean">
+        <MSBuild Projects="Demos\PowerViewer\PowerViewer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="PowerViewer:Make">
+        <MSBuild Projects="Demos\PowerViewer\PowerViewer.dproj" Targets="Make"/>
+    </Target>
     <Target Name="Build">
-        <CallTarget Targets="BasicEmotivTest;ExpEngineTest;EdkParrot;CogEngineTest;ARDrone_pkg"/>
+        <CallTarget Targets="BasicEmotivTest;ExpEngineTest;EdkParrot;CogEngineTest;ARDrone_pkg;PowerViewer"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="BasicEmotivTest:Clean;ExpEngineTest:Clean;EdkParrot:Clean;CogEngineTest:Clean;ARDrone_pkg:Clean"/>
+        <CallTarget Targets="BasicEmotivTest:Clean;ExpEngineTest:Clean;EdkParrot:Clean;CogEngineTest:Clean;ARDrone_pkg:Clean;PowerViewer:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="BasicEmotivTest:Make;ExpEngineTest:Make;EdkParrot:Make;CogEngineTest:Make;ARDrone_pkg:Make"/>
+        <CallTarget Targets="BasicEmotivTest:Make;ExpEngineTest:Make;EdkParrot:Make;CogEngineTest:Make;ARDrone_pkg:Make;PowerViewer:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>
