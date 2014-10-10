@@ -1,0 +1,368 @@
+object Status: TStatus
+  Size.Width = 298.000000000000000000
+  Size.Height = 349.000000000000000000
+  Size.PlatformDefault = False
+  TabOrder = 0
+  object StatusFrame: TScaledLayout
+    Align = Client
+    Locked = True
+    OriginalWidth = 298.000000000000000000
+    OriginalHeight = 349.000000000000000000
+    Size.Width = 298.000000000000000000
+    Size.Height = 349.000000000000000000
+    Size.PlatformDefault = False
+    object Arc1: TArc
+      Locked = True
+      Position.X = 10.000000000000000000
+      Position.Y = 28.000000000000000000
+      Size.Width = 281.000000000000000000
+      Size.Height = 321.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = claAliceblue
+      Stroke.Thickness = 3.000000000000000000
+      StartAngle = -180.000000000000000000
+      EndAngle = -180.000000000000000000
+    end
+    object chanFP1: TCircle
+      Locked = True
+      Position.X = 73.000000000000000000
+      Position.Y = 44.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object labelFP1: TLabel
+        Align = Center
+        AutoSize = True
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 21.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'FP1'
+      end
+    end
+    object ChanF3: TCircle
+      Locked = True
+      Position.X = 98.000000000000000000
+      Position.Y = 89.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label4: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'F3'
+      end
+    end
+    object ChanF4: TCircle
+      Locked = True
+      Position.X = 172.000000000000000000
+      Position.Y = 89.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label5: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'F4'
+      end
+    end
+    object chanFP2: TCircle
+      Locked = True
+      Position.X = 197.000000000000000000
+      Position.Y = 44.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label11: TLabel
+        Align = Center
+        AutoSize = True
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 23.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'FP2'
+      end
+    end
+    object chanFC5: TCircle
+      Locked = True
+      Position.X = 47.000000000000000000
+      Position.Y = 126.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label8: TLabel
+        Align = Center
+        AutoSize = True
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 23.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'FC5'
+      end
+    end
+    object chanF7: TCircle
+      Locked = True
+      Position.X = 17.000000000000000000
+      Position.Y = 95.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label6: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'F7'
+      end
+    end
+    object chanT7: TCircle
+      Locked = True
+      Position.X = -1.000000000000000000
+      Position.Y = 169.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label18: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'T7'
+      end
+    end
+    object chanP3: TCircle
+      Locked = True
+      Position.X = 17.000000000000000000
+      Position.Y = 213.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label14: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'P3'
+      end
+    end
+    object chanP7: TCircle
+      Locked = True
+      Position.X = 49.000000000000000000
+      Position.Y = 268.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label16: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'P7'
+      end
+    end
+    object chanO1: TCircle
+      Locked = True
+      Position.X = 95.000000000000000000
+      Position.Y = 315.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label12: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'O1'
+      end
+    end
+    object chanO2: TCircle
+      Locked = True
+      Position.X = 177.000000000000000000
+      Position.Y = 316.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label13: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'O2'
+      end
+    end
+    object chanP8: TCircle
+      Locked = True
+      Position.X = 221.000000000000000000
+      Position.Y = 268.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label17: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'P8'
+      end
+    end
+    object chanP4: TCircle
+      Locked = True
+      Position.X = 253.000000000000000000
+      Position.Y = 215.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label15: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'P4'
+      end
+    end
+    object chanT8: TCircle
+      Locked = True
+      Position.X = 271.000000000000000000
+      Position.Y = 169.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label19: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'T8'
+      end
+    end
+    object ChanFC6: TCircle
+      Locked = True
+      Position.X = 223.000000000000000000
+      Position.Y = 126.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label9: TLabel
+        Align = Center
+        AutoSize = True
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 24.000000000000000000
+        Size.Height = 16.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        TextSettings.WordWrap = False
+        Text = 'FC6'
+      end
+    end
+    object ChanF8: TCircle
+      Locked = True
+      Position.X = 253.000000000000000000
+      Position.Y = 95.000000000000000000
+      Size.Width = 30.000000000000000000
+      Size.Height = 36.000000000000000000
+      Size.PlatformDefault = False
+      object Label7: TLabel
+        Align = Center
+        StyledSettings = [Family, Size, Style]
+        Locked = True
+        Size.Width = 17.000000000000000000
+        Size.Height = 17.000000000000000000
+        Size.PlatformDefault = False
+        TextSettings.HorzAlign = Center
+        Text = 'F8'
+      end
+    end
+    object Line1: TLine
+      Locked = True
+      LineType = Left
+      Position.X = 149.000000000000000000
+      Position.Y = 3.000000000000000000
+      Size.Width = 1.000000000000000000
+      Size.Height = 340.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = claAliceblue
+      Stroke.Thickness = 2.000000000000000000
+    end
+    object Line2: TLine
+      Locked = True
+      LineType = Top
+      Position.X = 27.000000000000000000
+      Position.Y = 186.000000000000000000
+      Size.Width = 243.000000000000000000
+      Size.Height = 1.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = claAliceblue
+      Stroke.Thickness = 2.000000000000000000
+    end
+    object Line3: TLine
+      Locked = True
+      LineType = Diagonal
+      Position.X = 148.000000000000000000
+      Position.Y = -1.000000000000000000
+      Size.Width = 34.000000000000000000
+      Size.Height = 34.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = claAliceblue
+      Stroke.Thickness = 2.000000000000000000
+    end
+    object Line4: TLine
+      Locked = True
+      LineType = Diagonal
+      Position.X = 116.000000000000000000
+      Position.Y = -1.000000000000000000
+      RotationAngle = 90.000000000000000000
+      Size.Width = 34.000000000000000000
+      Size.Height = 34.000000000000000000
+      Size.PlatformDefault = False
+      Stroke.Color = claAliceblue
+      Stroke.Thickness = 2.000000000000000000
+    end
+  end
+end

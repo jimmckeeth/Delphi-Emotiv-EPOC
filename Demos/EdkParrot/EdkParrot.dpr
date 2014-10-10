@@ -2,7 +2,8 @@ program EdkParrot;
 
 uses
   FMX.Forms,
-  uEdkParrot in 'uEdkParrot.pas' {Form4};
+  uEdkParrot in 'uEdkParrot.pas' {Form4},
+  uStatusFrame in 'uStatusFrame.pas' {Status: TFrame};
 
 {$R *.res}
 

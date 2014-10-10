@@ -12,7 +12,8 @@ uses
 
   api.parrot.ardrone,
 
-  Emotiv.Epoc, Emotiv.EDK.Core, Emotiv.EDK.EmoState, Emotiv.EDK.ErrorCodes;
+  Emotiv.Epoc, Emotiv.EDK.Core, Emotiv.EDK.EmoState, Emotiv.EDK.ErrorCodes,
+  uStatusFrame;
 
 type
   TForm4 = class(TForm)
@@ -63,8 +64,17 @@ type
     lblLog: TLabel;
     DroneSendTimer: TTimer;
     Button1: TButton;
-    Button2: TButton;
     DisplayPowerThetheringProfile: TTetheringAppProfile;
+    Image3: TImage;
+    Label3: TLabel;
+    Button2: TButton;
+    statusTimer: TTimer;
+    Label10: TLabel;
+    lblUptime: TLabel;
+    lblWireless: TLabel;
+    pbBattery: TProgressBar;
+    Label20: TLabel;
+    Status: TStatus;
     procedure FormCreate(Sender: TObject);
     procedure EventAcquisitionTimerTimer(Sender: TObject);
     procedure btnTrainClick(Sender: TObject);
@@ -81,7 +91,6 @@ type
     procedure btnRightClick(Sender: TObject);
     procedure btnUpClick(Sender: TObject);
     procedure btnDownClick(Sender: TObject);
-    procedure timerTrainingTimer(Sender: TObject);
     procedure TetheringManagerEndAutoConnect(Sender: TObject);
     procedure TetheringManagerPairedFromLocal(const Sender: TObject;
       const AManagerInfo: TTetheringManagerInfo);
@@ -119,6 +128,16 @@ type
     procedure switchCooperSwitch(Sender: TObject);
     procedure animateTrainingFinish(Sender: TObject);
     procedure Button2Click(Sender: TObject);
+    procedure pbTrainingMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Single);
+    procedure pbTrainingMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Single);
+    procedure pbTrainingMouseLeave(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
+      Shift: TShiftState);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+      Shift: TShiftState);
+    procedure statusTimerTimer(Sender: TObject);
   private
     { Private declarations }
     eEvent: Pointer;
@@ -140,6 +159,7 @@ type
     procedure SetSustain(const Value: TDroneMovement);
 
     property sustain: TDroneMovement read FSustain write SetSustain;
+    procedure SendPower(APower: Single);
 
   public
     { Public declarations }
@@ -152,36 +172,16 @@ implementation
 
 {$R *.fmx}
 
-uses System.Rtti, System.Generics.Collections;
+uses System.Rtti, System.Generics.Collections, System.DateUtils;
 
 procedure TForm4.animateTrainingFinish(Sender: TObject);
-var
-  I: Integer;
 begin
-  for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
-  begin
-    DisplayPowerThetheringProfile.SendString(
-      TetheringManager.RemoteProfiles[I],
-      cbActions.Selected.Text, '0');
-  end;
+  SendPower(0);
 end;
 
 procedure TForm4.animateTrainingProcess(Sender: TObject);
-var
-  I: Integer;
-  power: Integer;
 begin
-  Power := Trunc(pbTraining.Value);
-  if Power <> FLastPower then
-  begin
-    for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
-    begin
-      DisplayPowerThetheringProfile.SendString(
-        TetheringManager.RemoteProfiles[I],
-        cbActions.Selected.Text, Power.ToString);
-    end;
-    FLastPower := power;
-  end;
+  SendPower(pbTraining.Value);
 end;
 
 procedure TForm4.btnBackClick(Sender: TObject);
@@ -316,6 +316,11 @@ end;
 
 procedure TForm4.Button2Click(Sender: TObject);
 begin
+  if TetheringManager.RemoteManagers.Count > 0 then
+  begin
+    pbTraining.Visible := True;
+    animateTraining.Start;
+  end;
   TetheringManager.AutoConnect();
 end;
 
@@ -456,6 +461,34 @@ begin
   sustain := TDroneMovement.Hover;
 end;
 
+procedure TForm4.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+begin
+  case UpCase(KeyChar) of
+    'T' : Drone.Takeoff;
+    'W' : sustain := TDroneMovement.MoveForward;
+    'A' : sustain := TDroneMovement.MoveLeft;
+    'S' : sustain := TDroneMovement.MoveForward;
+    'D' : sustain := TDroneMovement.MoveRight;
+    'Q' : sustain := TDroneMovement.RotateCCW;
+    'E' : sustain := TDroneMovement.RotateCW;
+    'R' : sustain := TDroneMovement.MoveUp;
+    'F' : sustain := TDroneMovement.MoveDown;
+    'Z' : begin
+            Drone.Land;
+            Log('Land');
+          end;
+    else
+      sustain := TDroneMovement.Hover;
+    end;
+end;
+
+procedure TForm4.FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
+  Shift: TShiftState);
+begin
+  sustain := TDroneMovement.Hover;
+end;
+
 procedure TForm4.FormShow(Sender: TObject);
 begin
   pbTraining.Visible := False;
@@ -519,15 +552,92 @@ begin
   Log('Paired from Remote');
 end;
 
+function Channel2Str(const Chan: EE_InputChannels_t): String;
+begin
+  case chan of
+    EE_CHAN_CMS: result := 'P3';
+    EE_CHAN_DRL: result := 'P4';
+    EE_CHAN_FP1: result := 'FP1';
+    EE_CHAN_AF3: result := 'AF3';
+    EE_CHAN_F7: result := 'F7';
+    EE_CHAN_F3: result := 'F3';
+    EE_CHAN_FC5: result := 'FC5';
+    EE_CHAN_T7: result := 'T7';
+    EE_CHAN_P7: result := 'P7';
+    EE_CHAN_O1: result := 'O1';
+    EE_CHAN_O2: result := 'O2';
+    EE_CHAN_P8: result := 'P8';
+    EE_CHAN_T8: result := 'T8';
+    EE_CHAN_FC6: result := 'FC6';
+    EE_CHAN_F4: result := 'F4';
+    EE_CHAN_F8: result := 'F8';
+    EE_CHAN_AF4: result := 'AF4';
+    EE_CHAN_FP2: result := 'FP2';
+  else
+    raise Exception.Create('Invalud value of EE_InputChannels_t.');
+  end;
+end;
+
+function Quality2Color(const Qual: EE_EEG_ContactQuality_t): TAlphaColor;
+begin
+  case Qual of
+    EEG_CQ_NO_SIGNAL: result := TAlphaColorRec.White;
+    EEG_CQ_VERY_BAD: result := TAlphaColorRec.Red;
+    EEG_CQ_POOR: result := TAlphaColorRec.Orange;
+    EEG_CQ_FAIR: result := TAlphaColorRec.Yellow;
+    EEG_CQ_GOOD: result := TAlphaColorRec.Chartreuse;
+  else
+    result := TAlphaColorRec.Blue;
+  end;
+
+end;
+
+procedure TForm4.statusTimerTimer(Sender: TObject);
+var
+  cnt: Integer;
+  contactQuality: EE_EEG_ContactQuality_t;
+  loc: EE_InputChannels_t;
+  q: String;
+  chan: TCircle;
+  seconds: Integer;
+  uptime: TDateTime;
+  wireless: EE_SignalStrength_t;
+  chrgLvl, chrgMax: Integer;
+begin
+  // Uptime
+  Seconds := Trunc(ES_GetTimeFromStart(eState));
+  uptime := IncSecond(0, seconds);
+  if (seconds > 0) then
+    lblUptime.Text := FormatDateTime('hh:mm:ss', uptime)
+  else
+    lblUptime.Text := 'Unknown';
+
+  wireless := ES_GetWirelessSignalStatus(eState);
+  case wireless of
+    NO_SIGNAL: lblWireless.Text := 'No signal';
+    BAD_SIGNAL: lblWireless.Text := 'Bad signal';
+    GOOD_SIGNAL: lblWireless.Text := 'Good signal';
+  end;
+
+  ES_GetBatteryChargeLevel(eState, @chrgLvl, @chrgMax);
+  pbBattery.Max := chrgMax;
+  pbBattery.Value := chrgLvl;
+
+  // Sensors
+  for loc := EE_CHAN_CMS to EE_CHAN_FP2 do
+  begin
+    contactQuality := ES_GetContactQuality(eState, Integer(loc));
+    chan := status.FindComponent('Chan'+Channel2Str(loc)) as TCircle;
+    if Assigned(chan) then
+    begin
+      chan.Fill.Color := Quality2Color(contactQuality);
+    end
+  end;
+end;
+
 procedure TForm4.EventAcquisitionTimerTimer(Sender: TObject);
 begin
   GetEvent;
-end;
-
-procedure TForm4.timerTrainingTimer(Sender: TObject);
-begin
- // pbTraining.Visible := True;
- // pbTraining.Value := pbTraining.Value + 12;
 end;
 
 procedure TForm4.Log(msg: String);
@@ -537,6 +647,24 @@ begin
   if (lbLog.Items.Count > 0) and (lbLog.Items[0] = msg) then
   else
     lbLog.Items.Insert(0, msg);
+end;
+
+procedure TForm4.pbTrainingMouseLeave(Sender: TObject);
+begin
+  SendPower(0);
+end;
+
+procedure TForm4.pbTrainingMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Single);
+begin
+  if ssLeft in Shift then
+    SendPower((x / pbTraining.Width)*100);
+end;
+
+procedure TForm4.pbTrainingMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Single);
+begin
+  SendPower(0);
 end;
 
 procedure TForm4.HandleCogEvent;
@@ -604,7 +732,6 @@ end;
 procedure TForm4.DisplayPower(cogAction: EE_CognitivAction_t; power: Single);
 var
   actionName: String;
-  I: Integer;
 begin
   actionName := CognitivActionToStr(cogAction);
   pbAct1.Value := 0;
@@ -628,14 +755,10 @@ begin
     pbAct4.Value := power;
   end;
 
+
   if not pbTraining.Visible then
   begin
-    for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
-    begin
-      DisplayPowerThetheringProfile.SendString(
-        TetheringManager.RemoteProfiles[I],
-        actionName, Trunc(power * 100).ToString);
-    end;
+    SendPower(power * 100);
   end;
 end;
 
@@ -693,6 +816,25 @@ end;
 procedure TForm4.SetSustain(const Value: TDroneMovement);
 begin
   FSustain := Value;
+end;
+
+procedure TForm4.SendPower(APower: Single);
+var
+  I: Integer;
+  Power: Integer;
+begin
+  Power := Trunc(APower);
+  if Power <> FLastPower then
+  begin
+    for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
+    begin
+      DisplayPowerThetheringProfile.SendString(
+        TetheringManager.RemoteProfiles[I],
+        cbActions.Selected.Text,
+        Power.ToString);
+    end;
+    FLastPower := power;
+  end;
 end;
 
 procedure TForm4.btnEmergencyClick(Sender: TObject);
