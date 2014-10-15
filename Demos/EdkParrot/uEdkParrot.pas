@@ -468,7 +468,7 @@ begin
     'T' : Drone.Takeoff;
     'W' : sustain := TDroneMovement.MoveForward;
     'A' : sustain := TDroneMovement.MoveLeft;
-    'S' : sustain := TDroneMovement.MoveForward;
+    'S' : sustain := TDroneMovement.MoveBackward;
     'D' : sustain := TDroneMovement.MoveRight;
     'Q' : sustain := TDroneMovement.RotateCCW;
     'E' : sustain := TDroneMovement.RotateCW;
