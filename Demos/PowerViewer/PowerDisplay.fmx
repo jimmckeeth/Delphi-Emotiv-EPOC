@@ -13,7 +13,6 @@ object Form17: TForm17
   DesignerMasterStyle = 0
   object StyleBook1: TStyleBook
     Left = 128
-    Top = 24
     ResourcesBin = {
       464D585F5354594C4520322E3501060B4465736372697074696F6E03A5000614
       5472616E73706172656E747374796C652E706E6704A79B0100060F6261636B67
@@ -11797,7 +11796,7 @@ object Form17: TForm17
       Size.PlatformDefault = False
       TextSettings.Font.Size = 22.000000000000000000
       TextSettings.HorzAlign = Center
-      Text = '(waiting for connection)'
+      Text = '(waiting . . .)'
     end
     object pbPower: TProgressBar
       Align = Top
@@ -11828,7 +11827,7 @@ object Form17: TForm17
     Text = 'TetheringManager1'
     AllowedAdapters = 'Network'
     Left = 64
-    Top = 20
+    Top = 4
   end
   object TetheringAppProfile1: TTetheringAppProfile
     Manager = TetheringManager1
@@ -11838,6 +11837,6 @@ object Form17: TForm17
     Resources = <>
     OnResourceReceived = TetheringAppProfile1ResourceReceived
     Left = 8
-    Top = 20
+    Top = 4
   end
 end
