@@ -159,7 +159,7 @@ type
     procedure SetSustain(const Value: TDroneMovement);
 
     property sustain: TDroneMovement read FSustain write SetSustain;
-    procedure SendPower(APower: Single);
+    procedure SendPower(const ActionName: string; APower: Single);
 
   public
     { Public declarations }
@@ -176,12 +176,12 @@ uses System.Rtti, System.Generics.Collections, System.DateUtils;
 
 procedure TForm4.animateTrainingFinish(Sender: TObject);
 begin
-  SendPower(0);
+  SendPower('none', 0);
 end;
 
 procedure TForm4.animateTrainingProcess(Sender: TObject);
 begin
-  SendPower(pbTraining.Value);
+  SendPower(cbActions.Selected.Text, pbTraining.Value);
 end;
 
 procedure TForm4.btnBackClick(Sender: TObject);
@@ -594,10 +594,8 @@ end;
 
 procedure TForm4.statusTimerTimer(Sender: TObject);
 var
-  cnt: Integer;
   contactQuality: EE_EEG_ContactQuality_t;
   loc: EE_InputChannels_t;
-  q: String;
   chan: TCircle;
   seconds: Integer;
   uptime: TDateTime;
@@ -651,20 +649,20 @@ end;
 
 procedure TForm4.pbTrainingMouseLeave(Sender: TObject);
 begin
-  SendPower(0);
+  SendPower('none', 0);
 end;
 
 procedure TForm4.pbTrainingMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Single);
 begin
   if ssLeft in Shift then
-    SendPower((x / pbTraining.Width)*100);
+    SendPower(cbActions.Selected.Text, (x / pbTraining.Width)*100);
 end;
 
 procedure TForm4.pbTrainingMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Single);
 begin
-  SendPower(0);
+  SendPower('none', 0);
 end;
 
 procedure TForm4.HandleCogEvent;
@@ -758,7 +756,7 @@ begin
 
   if not pbTraining.Visible then
   begin
-    SendPower(power * 100);
+    SendPower(actionName, power * 100);
   end;
 end;
 
@@ -776,24 +774,23 @@ procedure TForm4.DroneSendTimerTimer(Sender: TObject);
 begin
   if switchDrone.IsChecked then
   begin
-    if (cogpower <= 0) then
-    begin
-      case sustain of
-        TDroneMovement.Hover: Drone.Hover;
-        TDroneMovement.MoveUp: Drone.MoveUp;
-        TDroneMovement.MoveDown: Drone.MoveDown;
-        TDroneMovement.MoveLeft: Drone.MoveLeft;
-        TDroneMovement.MoveRight: Drone.MoveRight;
-        TDroneMovement.MoveForward: Drone.MoveForward;
-        TDroneMovement.MoveBackward: Drone.MoveBackward;
-        TDroneMovement.RotateCW: Drone.RotateCW;
-        TDroneMovement.RotateCCW: Drone.RotateCCW;
-      end;
-      Caption := 'Current command: ' + TValue.From(sustain).ToString;
-    end
-    else
-      Caption := 'Cognitive ' + IntToStr(trunc(CogPower * 100)) + '%';
-  end;
+    case sustain of
+      TDroneMovement.Hover:
+        if (cogpower <= 0) then
+          Drone.Hover
+        else
+          Caption := 'Cognitive ' + IntToStr(trunc(CogPower * 100)) + '%';
+      TDroneMovement.MoveUp: Drone.MoveUp;
+      TDroneMovement.MoveDown: Drone.MoveDown;
+      TDroneMovement.MoveLeft: Drone.MoveLeft;
+      TDroneMovement.MoveRight: Drone.MoveRight;
+      TDroneMovement.MoveForward: Drone.MoveForward;
+      TDroneMovement.MoveBackward: Drone.MoveBackward;
+      TDroneMovement.RotateCW: Drone.RotateCW;
+      TDroneMovement.RotateCCW: Drone.RotateCCW;
+    end;
+    Caption := 'Current command: ' + TValue.From(sustain).ToString;
+  end
 end;
 
 procedure TForm4.RunRemoteAction(action: string);
@@ -818,7 +815,7 @@ begin
   FSustain := Value;
 end;
 
-procedure TForm4.SendPower(APower: Single);
+procedure TForm4.SendPower(const ActionName: string; APower: Single);
 var
   I: Integer;
   Power: Integer;
@@ -830,7 +827,7 @@ begin
     begin
       DisplayPowerThetheringProfile.SendString(
         TetheringManager.RemoteProfiles[I],
-        cbActions.Selected.Text,
+        ActionName,
         Power.ToString);
     end;
     FLastPower := power;

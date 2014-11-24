@@ -10,6 +10,7 @@ object Form17: TForm17
   FormFactor.Devices = [Desktop]
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   DesignerMasterStyle = 0
   object StyleBook1: TStyleBook
     Left = 128
@@ -11800,15 +11801,13 @@ object Form17: TForm17
       Text = '(waiting for connection)'
     end
     object pbPower: TProgressBar
-      Align = Top
+      Align = Client
       Orientation = Horizontal
       Margins.Left = 10.000000000000000000
       Margins.Top = 10.000000000000000000
       Margins.Right = 10.000000000000000000
-      Position.X = 10.000000000000000000
-      Position.Y = 58.000000000000000000
       Size.Width = 423.000000000000000000
-      Size.Height = 63.000000000000000000
+      Size.Height = 58.000000000000000000
       Size.PlatformDefault = False
     end
     object Label2: TLabel

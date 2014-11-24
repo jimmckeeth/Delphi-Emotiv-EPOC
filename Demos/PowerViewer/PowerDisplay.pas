@@ -28,6 +28,7 @@ type
       const AResource: TRemoteResource);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     function HandleAppEvent(AAppEvent: TApplicationEvent;
       AContext: TObject): Boolean;
@@ -43,6 +44,40 @@ implementation
 
 {$R *.fmx}
 {$R *.GGlass.fmx ANDROID}
+
+{$ifdef Android}
+uses
+  Androidapi.JNIBridge,
+  Androidapi.JNI.JavaTypes,
+  Androidapi.Helpers,
+  Androidapi.JNI.GraphicsContentViewText,
+  Androidapi.JNI.Net.Wifi;
+
+function GetIpAddress: String;
+var
+  WifiManagerObj: JObject;
+  WifiManager: JWifiManager;
+  WifiInfo: JWifiInfo;
+  ip: Integer;
+begin
+  WifiManagerObj := SharedActivityContext.getSystemService(TJContext.JavaClass.WIFI_SERVICE);
+  WifiManager := TJWifiManager.Wrap((WifiManagerObj as ILocalObject).GetObjectID);
+  WifiInfo := WifiManager.getConnectionInfo();
+  ip := WifiInfo.getIpAddress and $FFFFFFFF;
+
+  result := Format('%d.%d.%d.%d',
+    [(IP) and $FF,
+     (IP shr 8) and $FF,
+     (IP shr 16) and $FF,
+     (IP shr 24) and $FF]);
+
+ end;
+{$ELSE}
+function GetIpAddress: String;
+begin
+  result := 'unknown';
+end;
+{$ENDIF}
 
 procedure TForm17.FormCreate(Sender: TObject);
 var
@@ -72,6 +107,11 @@ begin
   {$ENDIF}
 end;
 
+procedure TForm17.FormShow(Sender: TObject);
+begin
+  lbCommand.Text := GetIpAddress;
+end;
+
 function TForm17.HandleAppEvent(AAppEvent: TApplicationEvent;
   AContext: TObject): Boolean;
 begin
@@ -88,6 +128,7 @@ begin
     TApplicationEvent.OpenURL: ;
   end;
   {$ENDIF}
+  Result := False;
 end;
 
 end.
