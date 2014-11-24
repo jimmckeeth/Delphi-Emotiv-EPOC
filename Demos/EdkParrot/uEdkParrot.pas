@@ -75,6 +75,7 @@ type
     pbBattery: TProgressBar;
     Label20: TLabel;
     Status: TStatus;
+    Layout2: TLayout;
     procedure FormCreate(Sender: TObject);
     procedure EventAcquisitionTimerTimer(Sender: TObject);
     procedure btnTrainClick(Sender: TObject);
