@@ -13,7 +13,10 @@ uses
   api.parrot.ardrone,
 
   Emotiv.Epoc, Emotiv.EDK.Core, Emotiv.EDK.EmoState, Emotiv.EDK.ErrorCodes,
-  uStatusFrame;
+  uStatusFrame, FMX.Controls.Presentation, FMX.Edit,
+
+  IdBaseComponent, IdGlobal,
+  IdComponent, IdUDPBase, IdUDPClient, IdTCPConnection, IdTCPClient;
 
 type
   TForm4 = class(TForm)
@@ -75,6 +78,7 @@ type
     pbBattery: TProgressBar;
     Label20: TLabel;
     Status: TStatus;
+    edRemoteIp: TEdit;
     procedure FormCreate(Sender: TObject);
     procedure EventAcquisitionTimerTimer(Sender: TObject);
     procedure btnTrainClick(Sender: TObject);
@@ -138,6 +142,7 @@ type
     procedure FormKeyUp(Sender: TObject; var Key: Word; var KeyChar: Char;
       Shift: TShiftState);
     procedure statusTimerTimer(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     eEvent: Pointer;
@@ -320,8 +325,12 @@ begin
   begin
     pbTraining.Visible := True;
     animateTraining.Start;
+  end
+  else
+  begin
+    TetheringManager.AutoConnect(5000, edRemoteIp.Text);
+    Log('Connecting: ' + edRemoteIp.Text);
   end;
-  TetheringManager.AutoConnect();
 end;
 
 procedure TForm4.cbActionsEnter(Sender: TObject);
@@ -461,6 +470,12 @@ begin
   sustain := TDroneMovement.Hover;
 end;
 
+procedure TForm4.FormDestroy(Sender: TObject);
+begin
+  EE_EmoEngineEventFree(eEvent);
+  EE_EmoStateFree(eState);
+end;
+
 procedure TForm4.FormKeyDown(Sender: TObject; var Key: Word; var KeyChar: Char;
   Shift: TShiftState);
 begin
@@ -517,6 +532,7 @@ begin
     drone.Emergency;
     drone.FlatTrims;
     drone.UnlimitedAltitude;
+    Drone.AnimateLEDs(TLEDAnimation.SnakeGreenRed, 8, 1);
   end
   else
   begin
@@ -538,6 +554,9 @@ begin
   begin
     Log('Tethered to: ' + TetheringManager.RemoteProfiles[I].ProfileGroup);
   end;
+  if TetheringManager.RemoteProfiles.Count = 0 then
+    Log('No connection');
+
 end;
 
 procedure TForm4.TetheringManagerPairedFromLocal(const Sender: TObject;
@@ -820,7 +839,7 @@ var
   I: Integer;
   Power: Integer;
 begin
-  Power := Trunc(APower);
+  Power := Trunc(APower/10);
   if Power <> FLastPower then
   begin
     for I := 0 to TetheringManager.RemoteProfiles.Count - 1 do
@@ -906,6 +925,8 @@ var
   power: Single;
   cogAction: EE_CognitivAction_t;
 begin
+  RaiseEdkError(EE_EmoEngineEventGetEmoState(eEvent, eState));
+
   cogAction := ES_CognitivGetCurrentAction(eState);
   power := ES_CognitivGetCurrentActionPower(eState);
 
@@ -936,15 +957,12 @@ begin
       EE_UserAdded: Log('UserAdded');
       EE_UserRemoved: Log('UserRemoved');
       EE_ProfileEvent: Log('ProfileEvent');
-      EE_CognitivEvent: HandleCogEvent;
       EE_ExpressivEvent: Log('ExpressivEvent');
       EE_InternalStateChanged: Log('InternalStateChanged');
       EE_AllEvent: Log('AllEvent');
-      EE_EmoStateUpdated:
-      begin
-        RaiseEdkError(EE_EmoEngineEventGetEmoState(eEvent, eState));
-        HandleCogAction;
-      end;
+
+      EE_CognitivEvent: HandleCogEvent;
+      EE_EmoStateUpdated: HandleCogAction;
     end;
   end
   else if state <> EDK_NO_EVENT then

@@ -11823,6 +11823,8 @@ object Form17: TForm17
     end
   end
   object TetheringManager1: TTetheringManager
+    OnPairedFromLocal = TetheringManager1PairedFromLocal
+    OnPairedToRemote = TetheringManager1PairedToRemote
     Text = 'TetheringManager1'
     AllowedAdapters = 'Network'
     Left = 64

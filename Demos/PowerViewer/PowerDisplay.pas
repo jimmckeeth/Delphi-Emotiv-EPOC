@@ -29,6 +29,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure TetheringManager1PairedFromLocal(const Sender: TObject;
+      const AManagerInfo: TTetheringManagerInfo);
+    procedure TetheringManager1PairedToRemote(const Sender: TObject;
+      const AManagerInfo: TTetheringManagerInfo);
   private
     function HandleAppEvent(AAppEvent: TApplicationEvent;
       AContext: TObject): Boolean;
@@ -98,6 +102,18 @@ begin
     lbCommand.Text := AResource.Hint
   else
     lbCommand.Text := '';
+end;
+
+procedure TForm17.TetheringManager1PairedFromLocal(const Sender: TObject;
+  const AManagerInfo: TTetheringManagerInfo);
+begin
+  lbCommand.Text := 'Paired';
+end;
+
+procedure TForm17.TetheringManager1PairedToRemote(const Sender: TObject;
+  const AManagerInfo: TTetheringManagerInfo);
+begin
+  lbCommand.Text := 'Paired';
 end;
 
 procedure TForm17.FormDestroy(Sender: TObject);

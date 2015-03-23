@@ -12,7 +12,23 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
+        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>PowerViewer\res\drawable-xxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Appmethod\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>PowerViewer\res\drawable-xxhdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>PowerViewer\res\drawable-xxhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <Operation>1</Operation>
@@ -29,8 +45,16 @@
             <Overwrite>True</Overwrite>
             <Required>True</Required>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>PowerViewer\res\drawable-xxhdpi\</RemoteDir>
+        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>PowerViewer\res\drawable-mdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
+            <Operation>1</Operation>
+            <LocalCommand/>
+            <RemoteCommand/>
+            <Overwrite>True</Overwrite>
+        </DeployFile>
+        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>PowerViewer\res\drawable-xhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
@@ -77,14 +101,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_48x48.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>PowerViewer\res\drawable-mdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="c:\program files (x86)\embarcadero\studio\15.0\lib\android\debug\x86\libnative-activity.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>PowerViewer\library\lib\x86\</RemoteDir>
             <RemoteName>libPowerViewer.so</RemoteName>
@@ -93,8 +109,8 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Appmethod\Android\FM_LauncherIcon_36x36.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>PowerViewer\res\drawable-ldpi\</RemoteDir>
+        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Debug'">
+            <RemoteDir>PowerViewer\res\drawable-hdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
@@ -109,8 +125,8 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Debug'">
-            <RemoteDir>PowerViewer\res\drawable-hdpi\</RemoteDir>
+        <DeployFile Include="$(BDS)\bin\Artwork\Appmethod\Android\FM_LauncherIcon_36x36.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>PowerViewer\res\drawable-ldpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
@@ -125,17 +141,17 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="Android\Release\styles.xml" Condition="'$(Config)'=='Release'">
-            <RemoteDir>PowerViewer\res\values\</RemoteDir>
-            <RemoteName>styles.xml</RemoteName>
+        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Release'">
+            <RemoteDir>PowerViewer\res\drawable-hdpi\</RemoteDir>
+            <RemoteName>ic_launcher.png</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_144x144.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>PowerViewer\res\drawable-xxhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
+        <DeployFile Include="Android\Release\styles.xml" Condition="'$(Config)'=='Release'">
+            <RemoteDir>PowerViewer\res\values\</RemoteDir>
+            <RemoteName>styles.xml</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
@@ -293,14 +309,6 @@
             <RemoteCommand/>
             <Overwrite>True</Overwrite>
         </DeployFile>
-        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_72x72.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>PowerViewer\res\drawable-hdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
         <DeployFile Include="$(BDS)\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Condition="'$(Config)'=='Debug'">
             <RemoteDir>PowerViewer\res\drawable-xhdpi\</RemoteDir>
             <RemoteName>ic_launcher.png</RemoteName>
@@ -320,14 +328,6 @@
         <DeployFile Include="c:\program files (x86)\embarcadero\studio\15.0\lib\android\debug\armeabi\libnative-activity.so" Condition="'$(Config)'=='Debug'">
             <RemoteDir>PowerViewer\library\lib\armeabi\</RemoteDir>
             <RemoteName>libPowerViewer.so</RemoteName>
-            <Operation>1</Operation>
-            <LocalCommand/>
-            <RemoteCommand/>
-            <Overwrite>True</Overwrite>
-        </DeployFile>
-        <DeployFile Include="C:\Program Files (x86)\Embarcadero\Studio\15.0\bin\Artwork\Android\FM_LauncherIcon_96x96.png" Condition="'$(Config)'=='Release'">
-            <RemoteDir>PowerViewer\res\drawable-xhdpi\</RemoteDir>
-            <RemoteName>ic_launcher.png</RemoteName>
             <Operation>1</Operation>
             <LocalCommand/>
             <RemoteCommand/>
