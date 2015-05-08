@@ -54,7 +54,6 @@ type
     Label2: TLabel;
     CooperTetheringProfile: TTetheringAppProfile;
     TetheringManager: TTetheringManager;
-    Drone: TARDrone;
     btnEmergency: TSpeedButton;
     Image1: TImage;
     btnLaunch: TSpeedButton;
@@ -79,6 +78,7 @@ type
     Label20: TLabel;
     Status: TStatus;
     edRemoteIp: TEdit;
+    Drone: TARDrone;
     procedure FormCreate(Sender: TObject);
     procedure EventAcquisitionTimerTimer(Sender: TObject);
     procedure btnTrainClick(Sender: TObject);

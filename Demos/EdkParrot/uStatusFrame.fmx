@@ -2,7 +2,6 @@ object Status: TStatus
   Size.Width = 298.000000000000000000
   Size.Height = 349.000000000000000000
   Size.PlatformDefault = False
-  TabOrder = 0
   object StatusFrame: TScaledLayout
     Align = Client
     Locked = True
