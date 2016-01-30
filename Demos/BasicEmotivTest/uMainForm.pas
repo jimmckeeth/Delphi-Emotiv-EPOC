@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  EDK.Core, EDK.EmoState, EDK.ErrorCodes, Vcl.ExtCtrls, Vcl.Samples.Spin;
+  Emotiv.EDK.Core, Emotiv.EDK.EmoState, Emotiv.EDK.ErrorCodes, Vcl.ExtCtrls, Vcl.Samples.Spin;
 
 type
   TForm2 = class(TForm)
