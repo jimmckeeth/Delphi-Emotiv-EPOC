@@ -25,7 +25,7 @@ unit Emotiv.EDK.EmoState;
 interface
 
 uses
-  Windows;
+  Winapi.Windows;
 
 const
   EDK_DLL = 'edk.dll';
